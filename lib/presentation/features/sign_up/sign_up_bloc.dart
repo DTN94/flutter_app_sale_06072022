@@ -44,7 +44,7 @@ class SignUpBloc extends BaseBloc {
             userDto.token);
         userData.sink.add(user);
         progressSink.add(SignUpSuccessEvent(
-                            message: "Đăng nhập thành công",
+                            message: "Đăng ký thành công",
                             password: event.password,
                             email: user.email));
       }
