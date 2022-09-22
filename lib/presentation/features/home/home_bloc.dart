@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_bloc.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_event.dart';
+import 'package:flutter_app_sale_06072022/common/bases/base_event.dart';
 import 'package:flutter_app_sale_06072022/data/datasources/remote/dto/cart_dto.dart';
 import 'package:flutter_app_sale_06072022/data/model/cart.dart';
 import 'package:flutter_app_sale_06072022/data/model/product.dart';
@@ -29,6 +30,9 @@ class HomeBloc extends BaseBloc{
         break;
       case GetCartEvent:
         _getCart();
+        break;
+      case AddCartEvent:
+        _addCart(event as AddCartEvent);
         break;
     }
   }
@@ -64,6 +68,32 @@ class HomeBloc extends BaseBloc{
         cartResponse.data?.price
       );
       cartController.sink.add(cart);
+    } on DioError catch (e) {
+      cartController.sink.addError(e.response?.data["message"]);
+      messageSink.add(e.response?.data["message"]);
+    } catch (e) {
+      messageSink.add(e.toString());
+    }
+    loadingSink.add(false);
+  }
+
+  void _addCart(AddCartEvent event) async {
+    loadingSink.add(true);
+    try {
+      Response response = await _repository.addCart(event.id_product);
+      AppResponse<CartDto> cartResponse = AppResponse.fromJson(response.data, CartDto.convertJson);
+      CartDto? cartDto = cartResponse.data;
+      if (cartDto != null) {
+        Cart cart = Cart(
+            cartDto.id,
+            cartDto.products?.map((dto){
+              return Product(dto.id, dto.name, dto.address, dto.price, dto.img, dto.quantity, dto.gallery);
+            }).toList(),
+            cartDto.idUser,
+            cartDto.price
+        );
+        cartController.sink.add(cart);
+      }
     } on DioError catch (e) {
       cartController.sink.addError(e.response?.data["message"]);
       messageSink.add(e.response?.data["message"]);

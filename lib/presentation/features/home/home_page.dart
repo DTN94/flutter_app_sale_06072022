@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/constants/api_constant.dart';
+import '../../../common/constants/variable_constant.dart';
 import '../../../common/widgets/loading_widget.dart';
 import '../../../data/datasources/local/cache/app_cache.dart';
 import '../../../data/datasources/remote/api_request.dart';
@@ -172,6 +173,12 @@ class _HomeContainerState extends State<HomeContainer> {
                           children:[
                             ElevatedButton(
                               onPressed: () {
+                                String token = AppCache.getString(VariableConstant.TOKEN);
+                                if(token.isNotEmpty){
+                                  _homeBloc.eventSink.add(AddCartEvent(id_product: product.id));
+                                }else{
+                                  Navigator.pushNamedAndRemoveUntil(context, "/sign_in" , (Route<dynamic> route) => false);
+                                }
 
                               },
                               style: ButtonStyle(
