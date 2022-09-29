@@ -26,6 +26,9 @@ class CartBloc extends BaseBloc{
       case UpdateCartEvent:
         _updateCart(event as UpdateCartEvent);
         break;
+      case ConformCartEvent:
+        _conformCart(event as ConformCartEvent);
+        break;
     }
   }
   void _getListCart() async {
@@ -73,4 +76,21 @@ class CartBloc extends BaseBloc{
     }
     loadingSink.add(false);
   }
+
+  void _conformCart(ConformCartEvent event) async {
+    loadingSink.add(true);
+    try {
+      _repository.conformCart(event.idCart);
+      Cart cart = Cart("", [], "", -1);
+      cartController.sink.add(cart);
+    } on DioError catch (e) {
+      cartController.sink.addError(e.response?.data["message"]);
+      messageSink.add(e.response?.data["message"]);
+    } catch (e) {
+      messageSink.add(e.toString());
+    }
+    loadingSink.add(false);
+  }
+
+
 }

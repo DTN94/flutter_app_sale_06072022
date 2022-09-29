@@ -46,4 +46,9 @@ class ApiRequest {
       "quantity": quantity,
     });
   }
+  Future conformCart(String idCart) {
+    return _dio.post(ApiConstant.CONFORM_CART_URL, data: {
+      "id_cart": idCart
+    });
+  }
 }

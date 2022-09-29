@@ -113,7 +113,12 @@ class _CartPageState extends State<CartPage> {
                              padding: EdgeInsets.all(5),
                              child: ElevatedButton(
                                onPressed: () {
-
+                                 if (_cartModel != null) {
+                                   String? cartId = _cartModel!.id;
+                                   _cartBloc.eventSink.add(ConformCartEvent(idCart: cartId));
+                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đặt hàng thành công !!!')));
+                                   Navigator.pushNamedAndRemoveUntil(context, "/home" , (Route<dynamic> route) => false);
+                                 }
                                },
                                style: ButtonStyle(
                                    backgroundColor:
