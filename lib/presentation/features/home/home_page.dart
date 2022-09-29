@@ -38,22 +38,27 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Consumer<HomeBloc>(
             builder: (context, bloc, child){
-              return StreamBuilder<Cart>(
-                  initialData: null,
-                  stream: bloc.cartController.stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError || snapshot.data == null || snapshot.data?.products.isEmpty == true) {
-                      return Container();
+              return InkWell(
+                onTap: (){
+                  Navigator.pushNamed(context, VariableConstant.CART_ROUTE);
+                },
+                child: StreamBuilder<Cart>(
+                    initialData: null,
+                    stream: bloc.cartController.stream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError || snapshot.data == null || snapshot.data?.products.isEmpty == true) {
+                        return Container();
+                      }
+                      int count = snapshot.data?.products.length ?? 0;
+                      return Container(
+                        margin: EdgeInsets.only(right: 10, top: 10),
+                        child: Badge(
+                          badgeContent: Text(count.toString(), style: const TextStyle(color: Colors.white),),
+                          child: Icon(Icons.shopping_cart_outlined),
+                        ),
+                      );
                     }
-                    int count = snapshot.data?.products.length ?? 0;
-                    return Container(
-                      margin: EdgeInsets.only(right: 10, top: 10),
-                      child: Badge(
-                        badgeContent: Text(count.toString(), style: const TextStyle(color: Colors.white),),
-                        child: Icon(Icons.shopping_cart_outlined),
-                      ),
-                    );
-                  }
+                ),
               );
             },
           )

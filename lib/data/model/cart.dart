@@ -12,4 +12,9 @@ class Cart {
     this.idUser = idUser ?? "";
     this.price = price ?? 0;
   }
+
+  @override
+  String toString() {
+    return 'Cart{id: $id, products: $products, idUser: $idUser, price: $price}';
+  }
 }
