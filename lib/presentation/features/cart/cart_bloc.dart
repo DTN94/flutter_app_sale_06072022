@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_app_sale_06072022/data/model/product.dart';
+import 'package:flutter_app_sale_06072022/data/repositories/order_repository.dart';
 import 'package:flutter_app_sale_06072022/presentation/features/cart/cart_event.dart';
 import 'dart:async';
 import '../../../common/bases/base_bloc.dart';
@@ -7,14 +8,14 @@ import '../../../common/bases/base_event.dart';
 import '../../../data/datasources/remote/app_response.dart';
 import '../../../data/datasources/remote/dto/cart_dto.dart';
 import '../../../data/model/cart.dart';
-import '../../../data/repositories/product_repository.dart';
+import '../../../data/repositories/cart_repository.dart';
 
 class CartBloc extends BaseBloc{
   StreamController<Cart> cartController = StreamController();
-  late ProductRepository _repository;
+  late CartRepository _repository;
 
-  void updateProductRepository(ProductRepository productRepository) {
-    _repository = productRepository;
+  void updateCartRepository(CartRepository cartRepository) {
+    _repository = cartRepository;
   }
 
   @override
@@ -91,6 +92,4 @@ class CartBloc extends BaseBloc{
     }
     loadingSink.add(false);
   }
-
-
 }

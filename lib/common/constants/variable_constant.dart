@@ -7,4 +7,6 @@ class VariableConstant {
   static final String HOME_ROUTE = "/home";
   static final String CART_ROUTE = "/cart";
   static final String SPLASH_ROUTE = "/splash";
+  static final String ORDER_HISTORY_ROUTE = "/order_history";
+  static final String ORDER_DETAIL_ROUTE = "/order_detail";
 }

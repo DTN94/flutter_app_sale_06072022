@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import '../../../common/bases/base_widget.dart';
 import '../../../data/datasources/remote/api_request.dart';
 import '../../../data/model/cart.dart';
-import '../../../data/repositories/product_repository.dart';
+import '../../../data/repositories/cart_repository.dart';
 import 'cart_event.dart';
 
 
@@ -29,18 +29,18 @@ class _CartPageState extends State<CartPage> {
       ),
       providers: [
         Provider(create: (context) => ApiRequest()),
-        ProxyProvider<ApiRequest, ProductRepository>(
+        ProxyProvider<ApiRequest, CartRepository>(
           update: (context, request, repository) {
             repository?.updateRequest(request);
-            return repository ?? ProductRepository()
+            return repository ?? CartRepository()
               ..updateRequest(request);
           },
         ),
-        ProxyProvider<ProductRepository, CartBloc>(
+        ProxyProvider<CartRepository, CartBloc>(
           update: (context, repository, bloc) {
-            bloc?.updateProductRepository(repository);
+            bloc?.updateCartRepository(repository);
             return bloc ?? CartBloc()
-              ..updateProductRepository(repository);
+              ..updateCartRepository(repository);
           },
         ),
       ],
@@ -68,82 +68,88 @@ class _CartPageState extends State<CartPage> {
 
    @override
    Widget build(BuildContext context) {
-     return SafeArea(
-         child: Container(
-           child: Stack(
-             children: [
-               StreamBuilder<Cart>(
-                   initialData: null,
-                   stream: _cartBloc.cartController.stream,
-                   builder: (context, snapshot) {
-                     if (snapshot.hasError) {
-                       return const Center(child: Text("Data error"));
-                     }
-                     if (snapshot.hasData) {
-                       _cartModel = snapshot.data;
-                       if (snapshot.data!.products.isEmpty) {
-                         return const Center(
-                           child: Text(
-                             'Your Cart is Empty',
-                             style:
-                             TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-                           )
+     return WillPopScope(
+         onWillPop: () async{
+           Navigator.pop(context, _cartModel);
+           return true;
+         },
+       child: SafeArea(
+           child: Container(
+             child: Stack(
+               children: [
+                 StreamBuilder<Cart>(
+                     initialData: null,
+                     stream: _cartBloc.cartController.stream,
+                     builder: (context, snapshot) {
+                       if (snapshot.hasError) {
+                         return const Center(child: Text("Data error"));
+                       }
+                       if (snapshot.hasData) {
+                         _cartModel = snapshot.data;
+                         if (snapshot.data!.products.isEmpty) {
+                           return const Center(
+                             child: Text(
+                               'Your Cart is Empty',
+                               style:
+                               TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+                             )
+                           );
+                         }
+                         return Column(
+                           children: [
+                             Expanded(
+                               child: ListView.builder(
+                                   itemCount: snapshot.data?.products.length ?? 0,
+                                   itemBuilder: (context, index) {
+                                     return _buildItem(snapshot.data?.products[index]);
+                                   }
+                               )
+                             ),
+                             Container(
+                               margin: EdgeInsets.symmetric(vertical: 5),
+                               padding: EdgeInsets.all(10),
+                               child: Text(
+                                   "Tổng tiền : " +
+                                       NumberFormat("#,###", "en_US")
+                                           .format(_cartModel?.price) +
+                                       " đ",
+                                   style: TextStyle(fontSize: 22, color: Colors.black,fontWeight: FontWeight.bold))),
+                             Container(
+                               padding: EdgeInsets.all(5),
+                               child: ElevatedButton(
+                                 onPressed: () {
+                                   if (_cartModel != null) {
+                                     String? cartId = _cartModel!.id;
+                                     _cartBloc.eventSink.add(ConformCartEvent(idCart: cartId));
+                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đặt hàng thành công !!!')));
+                                     Navigator.pushNamedAndRemoveUntil(context, "/home" , (Route<dynamic> route) => false);
+                                   }
+                                 },
+                                 style: ButtonStyle(
+                                     backgroundColor:
+                                     MaterialStateProperty.all(Colors.deepOrange)),
+                                 child: Padding(
+                                   padding: EdgeInsets.only(left:15, bottom: 10, right: 15, top:10),
+                                   child: Text("Đặt Đơn",style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
+                                   ),
+                                 ),
+                               )
+                             ),
+                           ],
                          );
                        }
-                       return Column(
-                         children: [
-                           Expanded(
-                             child: ListView.builder(
-                                 itemCount: snapshot.data?.products.length ?? 0,
-                                 itemBuilder: (context, index) {
-                                   return _buildItem(snapshot.data?.products[index]);
-                                 }
-                             )
-                           ),
-                           Container(
-                             margin: EdgeInsets.symmetric(vertical: 5),
-                             padding: EdgeInsets.all(10),
-                             child: Text(
-                                 "Tổng tiền : " +
-                                     NumberFormat("#,###", "en_US")
-                                         .format(_cartModel?.price) +
-                                     " đ",
-                                 style: TextStyle(fontSize: 22, color: Colors.black,fontWeight: FontWeight.bold))),
-                           Container(
-                             padding: EdgeInsets.all(5),
-                             child: ElevatedButton(
-                               onPressed: () {
-                                 if (_cartModel != null) {
-                                   String? cartId = _cartModel!.id;
-                                   _cartBloc.eventSink.add(ConformCartEvent(idCart: cartId));
-                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Đặt hàng thành công !!!')));
-                                   Navigator.pushNamedAndRemoveUntil(context, "/home" , (Route<dynamic> route) => false);
-                                 }
-                               },
-                               style: ButtonStyle(
-                                   backgroundColor:
-                                   MaterialStateProperty.all(Colors.deepOrange)),
-                               child: Padding(
-                                 padding: EdgeInsets.only(left:15, bottom: 10, right: 15, top:10),
-                                 child: Text("Đặt Đơn",style: TextStyle(color: Colors.white, fontSize: 20,fontWeight: FontWeight.bold),
-                                 ),
-                               ),
-                             )
-                           ),
-                         ],
-                       );
+                       return Container();
                      }
-                     return Container();
-                   }
-                   ),
-               LoadingWidget(
-                 bloc: _cartBloc,
-                 child: Container(),
-               )
-             ],
-           ),
+                     ),
+                 LoadingWidget(
+                   bloc: _cartBloc,
+                   child: Container(),
+                 )
+               ],
+             ),
 
-         )
+           )
+       ),
      );
    }
 

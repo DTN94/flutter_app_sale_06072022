@@ -51,4 +51,7 @@ class ApiRequest {
       "id_cart": idCart
     });
   }
+  Future getOrder() {
+    return _dio.post(ApiConstant.ORDER_HISTORY_URL);
+  }
 }

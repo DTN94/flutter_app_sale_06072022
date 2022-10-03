@@ -8,7 +8,6 @@ import 'package:flutter_app_sale_06072022/presentation/features/home/home_bloc.d
 import 'package:flutter_app_sale_06072022/presentation/features/home/home_event.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../../common/constants/api_constant.dart';
 import '../../../common/constants/variable_constant.dart';
 import '../../../common/widgets/loading_widget.dart';
@@ -36,29 +35,42 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         actions: [
+          Container(
+              margin: EdgeInsets.only(right: 10, top: 10),
+              child: IconButton(
+                icon: Icon(Icons.history_edu),
+                onPressed: () {
+                  Navigator.pushNamed(context, VariableConstant.ORDER_HISTORY_ROUTE);
+                },
+              )
+          ),
           Consumer<HomeBloc>(
             builder: (context, bloc, child){
-              return InkWell(
-                onTap: (){
-                  Navigator.pushNamed(context, VariableConstant.CART_ROUTE);
-                },
-                child: StreamBuilder<Cart>(
-                    initialData: null,
-                    stream: bloc.cartController.stream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError || snapshot.data == null || snapshot.data?.products.isEmpty == true) {
-                        return Container();
-                      }
-                      int count = snapshot.data?.products.length ?? 0;
-                      return Container(
-                        margin: EdgeInsets.only(right: 10, top: 10),
-                        child: Badge(
-                          badgeContent: Text(count.toString(), style: const TextStyle(color: Colors.white),),
-                          child: Icon(Icons.shopping_cart_outlined),
-                        ),
-                      );
+              return StreamBuilder<Cart>(
+                  initialData: null,
+                  stream: bloc.cartController.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError || snapshot.data == null || snapshot.data?.products.isEmpty == true) {
+                      return Container();
                     }
-                ),
+                    int count = snapshot.data?.products.length ?? 0;
+                    return Container(
+                      margin: EdgeInsets.only(right: 10, top: 10),
+                      child: Badge(
+                          badgeContent: Text(count.toString(), style: const TextStyle(color: Colors.white),),
+                          child: IconButton(
+                            icon: Icon(Icons.shopping_cart_outlined),
+                            onPressed: () {
+                              Navigator.pushNamed(context, VariableConstant.CART_ROUTE).then((cartUpdate){
+                                if(cartUpdate != null){
+                                  bloc.cartController.sink.add(cartUpdate as Cart);
+                                }
+                              });
+                            },
+                          )
+                      ),
+                    );
+                  }
               );
             },
           )

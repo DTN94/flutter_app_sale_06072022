@@ -24,7 +24,7 @@ class ProductDto {
   String? address;
   num? price;
   String? img;
-  num? quantity;
+  int? quantity;
   List<String>? gallery;
 
   Map<String, dynamic> toJson() {
