@@ -120,6 +120,7 @@ class _HomeContainerState extends State<HomeContainer> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Container(
+          padding: EdgeInsets.all(5),
           child: Stack(
             children: [
               StreamBuilder<List<Product>>(
@@ -170,7 +171,7 @@ class _HomeContainerState extends State<HomeContainer> {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 5),
+                  padding: const EdgeInsets.only(left: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -210,7 +211,7 @@ class _HomeContainerState extends State<HomeContainer> {
                                   shape: MaterialStateProperty.all(
                                       const RoundedRectangleBorder(
                                           borderRadius: BorderRadius.all(
-                                              Radius.circular(10))))),
+                                              Radius.circular(5))))),
                               child:
                               const Text("Thêm vào giỏ", style: TextStyle(fontSize: 14)),
                             ),
@@ -223,15 +224,15 @@ class _HomeContainerState extends State<HomeContainer> {
                                     backgroundColor:
                                     MaterialStateProperty.resolveWith((states) {
                                       if (states.contains(MaterialState.pressed)) {
-                                        return const Color.fromARGB(200, 11, 22, 142);
-                                      } else {
                                         return const Color.fromARGB(230, 11, 22, 142);
+                                      } else {
+                                        return const Color.fromARGB(255, 11, 22, 142);
                                       }
                                     }),
                                     shape: MaterialStateProperty.all(
                                         const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
-                                                Radius.circular(10))))),
+                                                Radius.circular(5))))),
                                 child:
                                 Text("Chi tiết", style: const TextStyle(fontSize: 14)),
                               ),

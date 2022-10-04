@@ -70,6 +70,7 @@ class _OrderContainerState extends State<OrderContainer> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Container(
+          padding: EdgeInsets.all(5),
           child: Stack(
             children: [
               StreamBuilder<List<Order>>(
@@ -164,12 +165,16 @@ class _OrderContainerState extends State<OrderContainer> {
                 padding: const EdgeInsets.only(left: 5,right: 5),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, VariableConstant.ORDER_DETAIL_ROUTE);
+                    Navigator.pushNamed(context, VariableConstant.ORDER_DETAIL_ROUTE , arguments: order);
                   },
                   style: ButtonStyle(
                       backgroundColor:
                       MaterialStateProperty.resolveWith((states) {
-                        Color.fromARGB(200, 11, 22, 142);
+                        if (states.contains(MaterialState.pressed)) {
+                          return const Color.fromARGB(230, 11, 22, 142);
+                        } else {
+                          return const Color.fromARGB(200, 11, 22, 142);
+                        }
                       }),
                       shape: MaterialStateProperty.all(
                           const RoundedRectangleBorder(

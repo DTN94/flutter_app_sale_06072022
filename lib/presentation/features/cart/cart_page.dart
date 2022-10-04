@@ -75,6 +75,7 @@ class _CartPageState extends State<CartPage> {
          },
        child: SafeArea(
            child: Container(
+             padding: EdgeInsets.all(5),
              child: Stack(
                children: [
                  StreamBuilder<Cart>(
