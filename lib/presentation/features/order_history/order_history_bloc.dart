@@ -30,17 +30,6 @@ class OrderBloc extends BaseBloc{
   void _getHistoryOrder() async {
     loadingSink.add(true);
     try{
-      //Response response = await _repository.getOrder();
-      // final Map<String, dynamic> responseJson = json.decode(response.toString());
-      // if (responseJson["result"] > 0) {
-      //   List orders = responseJson['data'];
-      //   final result = orders
-      //       .map<OrderDto>((json) => OrderDto.fromJson(json))
-      //       .toList();
-      //   // print(result);
-      //   orderController.sink.add(result);
-      // }
-
       Response response = await _repository.getOrder();
       AppResponse<List<OrderDto>> orderResponse = AppResponse.fromJson(response.data, OrderDto.convertJson);
 

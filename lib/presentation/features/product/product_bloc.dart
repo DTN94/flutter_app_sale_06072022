@@ -1,37 +1,37 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_app_sale_06072022/data/model/product.dart';
-import 'package:flutter_app_sale_06072022/presentation/features/cart/cart_event.dart';
 import 'dart:async';
-import '../../../common/bases/base_bloc.dart';
-import '../../../common/bases/base_event.dart';
+
+import 'package:dio/dio.dart';
+import 'package:flutter_app_sale_06072022/common/bases/base_bloc.dart';
+import 'package:flutter_app_sale_06072022/common/bases/base_event.dart';
+import 'package:flutter_app_sale_06072022/data/datasources/remote/dto/cart_dto.dart';
+import 'package:flutter_app_sale_06072022/data/model/cart.dart';
+import 'package:flutter_app_sale_06072022/data/model/product.dart';
+import 'package:flutter_app_sale_06072022/data/repositories/product_repository.dart';
+import 'package:flutter_app_sale_06072022/presentation/features/product/product_event.dart';
+
 import '../../../data/datasources/remote/app_response.dart';
-import '../../../data/datasources/remote/dto/cart_dto.dart';
-import '../../../data/model/cart.dart';
-import '../../../data/repositories/cart_repository.dart';
 
-class CartBloc extends BaseBloc{
+class ProductBloc extends BaseBloc{
   StreamController<Cart> cartController = StreamController();
-  late CartRepository _repository;
+  late ProductRepository _repository;
 
-  void updateCartRepository(CartRepository cartRepository) {
-    _repository = cartRepository;
+  void updateProductRepository(ProductRepository productRepository) {
+    _repository = productRepository;
   }
 
   @override
   void dispatch(BaseEvent event) {
     switch(event.runtimeType) {
-      case GetListCartEvent:
-        _getListCart();
+      case GetCartEvent:
+        _getCart();
         break;
-      case UpdateCartEvent:
-        _updateCart(event as UpdateCartEvent);
-        break;
-      case ConformCartEvent:
-        _conformCart(event as ConformCartEvent);
+      case AddToCartEvent:
+        _addToCart(event as AddToCartEvent);
         break;
     }
   }
-  void _getListCart() async {
+
+  void _getCart() async {
     loadingSink.add(true);
     try {
       Response response = await _repository.getCart();
@@ -54,10 +54,10 @@ class CartBloc extends BaseBloc{
     loadingSink.add(false);
   }
 
-  void _updateCart(UpdateCartEvent event) async {
+  void _addToCart(AddToCartEvent event) async {
     loadingSink.add(true);
     try {
-      Response response = await _repository.updateCart(event.idCart, event.idProduct, event.quantity,);
+      Response response = await _repository.addCart(event.id);
       AppResponse<CartDto> cartResponse = AppResponse.fromJson(response.data, CartDto.convertJson);
       Cart cart = Cart(
           cartResponse.data?.id,
@@ -67,21 +67,6 @@ class CartBloc extends BaseBloc{
           cartResponse.data?.idUser,
           cartResponse.data?.price
       );
-      cartController.sink.add(cart);
-    } on DioError catch (e) {
-      cartController.sink.addError(e.response?.data["message"]);
-      messageSink.add(e.response?.data["message"]);
-    } catch (e) {
-      messageSink.add(e.toString());
-    }
-    loadingSink.add(false);
-  }
-
-  void _conformCart(ConformCartEvent event) async {
-    loadingSink.add(true);
-    try {
-      _repository.conformCart(event.idCart);
-      Cart cart = Cart("", [], "", -1);
       cartController.sink.add(cart);
     } on DioError catch (e) {
       cartController.sink.addError(e.response?.data["message"]);

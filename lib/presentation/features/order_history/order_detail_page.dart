@@ -137,9 +137,6 @@ class _BuildContainerOrderState extends State<BuildContainerOrder> {
       child: Card(
         elevation: 2,
         child: GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, VariableConstant.ORDER_DETAIL_ROUTE);
-          },
           child: Container(
             child: Row(
               children: [

@@ -156,18 +156,17 @@ class _HomeContainerState extends State<HomeContainer> {
   Widget _buildItemFood(Product? product) {
     if (product == null) return Container();
     return SizedBox(
-      height: 135,
       child: Card(
-        elevation: 5,
+        elevation: 2,
         shadowColor: Colors.blueGrey,
         child: Container(
-          padding: const EdgeInsets.only(top: 5, bottom: 5),
+          padding: const EdgeInsets.all(3),
           child: Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(5),
                 child: Image.network(ApiConstant.BASE_URL + product.img,
-                    width: 150, height: 120, fit: BoxFit.fill),
+                    width: 120, height: 100, fit: BoxFit.fill),
               ),
               Expanded(
                 child: Padding(
@@ -177,16 +176,29 @@ class _HomeContainerState extends State<HomeContainer> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(top: 5),
+                        padding: const EdgeInsets.only(top: 5,bottom:4),
                         child: Text(product.name.toString(),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 16)),
+                            style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold)
+                        ),
                       ),
-                      Text(
-                          "Giá : ${NumberFormat("#,###", "en_US")
-                                  .format(product.price)} đ",
-                          style: const TextStyle(fontSize: 12)),
+                      Row(
+                        children: [
+                          Text(
+                              "Giá : ",
+                              style: TextStyle(fontSize: 13)
+                          ),
+                          Text(NumberFormat("#,###", "en_US")
+                              .format(product.price) +" đ",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold)
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 2,),
                       Row(
                           children:[
                             ElevatedButton(
@@ -197,7 +209,6 @@ class _HomeContainerState extends State<HomeContainer> {
                                 }else{
                                   Navigator.pushNamedAndRemoveUntil(context, "/sign_in" , (Route<dynamic> route) => false);
                                 }
-
                               },
                               style: ButtonStyle(
                                   backgroundColor:
@@ -219,6 +230,7 @@ class _HomeContainerState extends State<HomeContainer> {
                               padding: const EdgeInsets.only(left: 5),
                               child: ElevatedButton(
                                 onPressed: () {
+                                  Navigator.pushNamed(context, VariableConstant.PRODUCT_DETAIL_ROUTE, arguments: product);
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:

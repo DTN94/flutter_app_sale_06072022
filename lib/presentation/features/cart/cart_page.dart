@@ -157,18 +157,17 @@ class _CartPageState extends State<CartPage> {
    Widget _buildItem(Product? product) {
      if (product == null) return Container();
      return Container(
-       height: 135,
        child: Card(
          elevation: 5,
          shadowColor: Colors.blueGrey,
          child: Container(
-           padding: EdgeInsets.only(top: 5, bottom: 5),
+           padding: EdgeInsets.all(3),
            child: Row(
              children: [
                ClipRRect(
-                 borderRadius: BorderRadius.circular(5),
+                 borderRadius: BorderRadius.circular(3),
                  child: Image.network(ApiConstant.BASE_URL + product.img,
-                     width: 150, height: 120, fit: BoxFit.fill),
+                     width: 120, height: 100, fit: BoxFit.fill),
                ),
                Expanded(
                  child: Padding(
@@ -178,18 +177,29 @@ class _CartPageState extends State<CartPage> {
                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                      children: [
                        Padding(
-                         padding: const EdgeInsets.only(top: 5),
+                         padding: const EdgeInsets.only(top: 5,bottom:3),
                          child: Text((product.name).toString(),
                              maxLines: 1,
                              overflow: TextOverflow.ellipsis,
-                             style: TextStyle(fontSize: 17)),
+                             style: const TextStyle(fontSize: 15,fontWeight: FontWeight.bold)
+                         ),
                        ),
-                       Text(
-                           "Giá : " +
-                               NumberFormat("#,###", "en_US")
-                                   .format(product.price) +
-                               " đ",
-                           style: TextStyle(fontSize: 14)),
+                       Row(
+                         children: [
+                           Text(
+                               "Giá : ",
+                               style: TextStyle(fontSize: 13)
+                           ),
+                           Text(NumberFormat("#,###", "en_US")
+                               .format(product.price) +" đ",
+                               style: TextStyle(
+                                   fontSize: 14,
+                                   color: Colors.red,
+                                   fontWeight: FontWeight.bold)
+                           ),
+                         ],
+                       ),
+                       SizedBox(height: 2,),
                        Row(
                          children: [
                            ElevatedButton(
