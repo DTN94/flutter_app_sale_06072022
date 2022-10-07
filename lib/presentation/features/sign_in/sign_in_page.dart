@@ -141,7 +141,7 @@ class _SignInContainerState extends State<SignInContainer> {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Không có tài khoản!"),
+            Text("Chưa có tài khoản!"),
             InkWell(
               onTap: () async{
                 try {
