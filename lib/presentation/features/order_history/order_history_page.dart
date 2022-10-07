@@ -82,8 +82,18 @@ class _OrderContainerState extends State<OrderContainer> {
                         child: Center(child: Text("Data error")),
                       );
                     }
-                    if (snapshot.hasData && snapshot.data == []) {
-                      return Container();
+                    if (snapshot.data == null || snapshot.data!.isEmpty) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("assets/images/cart_empty.png"),
+                            Text(
+                              'Bạn chưa có đơn hàng nào !!!',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
+                            ),
+                          ],
+                        );
                     }
                     return ListView.builder(
                         itemCount: snapshot.data?.length ?? 0,

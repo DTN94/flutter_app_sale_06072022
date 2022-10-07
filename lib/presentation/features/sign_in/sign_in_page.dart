@@ -22,7 +22,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return PageContainer(
       appBar: AppBar(
-        title: const Text("Sign In"),
+        title: const Text("Đăng Nhập"),
       ),
       providers: [
         Provider(create: (context) => ApiRequest()),
@@ -62,7 +62,6 @@ class _SignInContainerState extends State<SignInContainer> {
   void initState() {
     super.initState();
     _bloc = context.read<SignInBloc>();
-
     SchedulerBinding.instance.addPostFrameCallback((_) {
       _bloc.messageStream.listen((event) {
         showMessage(context, "Thông báo", event);
@@ -142,7 +141,7 @@ class _SignInContainerState extends State<SignInContainer> {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Don't have an account!"),
+            Text("Không có tài khoản!"),
             InkWell(
               onTap: () async{
                 try {
@@ -156,7 +155,7 @@ class _SignInContainerState extends State<SignInContainer> {
                   return;
                 }
               },
-              child: Text("Sign Up",
+              child: Text(" Đăng ký",
                   style: TextStyle(
                       color: Colors.red, decoration: TextDecoration.underline)),
             )
@@ -237,10 +236,10 @@ class _SignInContainerState extends State<SignInContainer> {
               }),
               elevation: MaterialStateProperty.all(5),
               padding: MaterialStateProperty.all(
-                  EdgeInsets.symmetric(vertical: 5, horizontal: 100)),
+                  EdgeInsets.symmetric(vertical: 10, horizontal: 100)),
             )),
             child: ElevatedButton(
-              child: Text("Login",
+              child: Text("Đăng Nhập",
                   style: TextStyle(fontSize: 18, color: Colors.white)),
               onPressed: () => onPress(),
             )));

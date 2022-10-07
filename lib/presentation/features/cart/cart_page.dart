@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sale_06072022/common/constants/api_constant.dart';
+import 'package:flutter_app_sale_06072022/common/constants/variable_constant.dart';
 import 'package:flutter_app_sale_06072022/common/widgets/loading_widget.dart';
 import 'package:flutter_app_sale_06072022/data/model/product.dart';
 import 'package:flutter_app_sale_06072022/presentation/features/cart/cart_bloc.dart';
@@ -26,6 +27,17 @@ class _CartPageState extends State<CartPage> {
     return PageContainer(
       appBar: AppBar(
         title: const Text("Giỏ hàng"),
+        actions: [
+          Container(
+              margin: EdgeInsets.only(right: 10, top: 10),
+              child: IconButton(
+                icon: Icon(Icons.history_edu),
+                onPressed: () {
+                  Navigator.pushNamed(context, VariableConstant.ORDER_HISTORY_ROUTE);
+                },
+              )
+          ),
+        ],
       ),
       providers: [
         Provider(create: (context) => ApiRequest()),
@@ -88,12 +100,16 @@ class _CartPageState extends State<CartPage> {
                        if (snapshot.hasData) {
                          _cartModel = snapshot.data;
                          if (snapshot.data!.products.isEmpty) {
-                           return const Center(
-                             child: Text(
-                               'Your Cart is Empty',
-                               style:
-                               TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-                             )
+                           return Column(
+                             mainAxisAlignment: MainAxisAlignment.center,
+                             children: [
+                               Image.asset("assets/images/cart_empty.png"),
+                               Text(
+                                 'Giỏ hàng trống !!!',
+                                 style: TextStyle(
+                                     fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
+                               ),
+                             ],
                            );
                          }
                          return Column(

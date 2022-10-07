@@ -28,6 +28,15 @@ class _ProductPageState extends State<ProductPage> {
       appBar: AppBar(
         title: const Text("Chi tiết sản phẩm"),
         actions: [
+          Container(
+              margin: EdgeInsets.only(right: 10, top: 10),
+              child: IconButton(
+                icon: Icon(Icons.history_edu),
+                onPressed: () {
+                  Navigator.pushNamed(context, VariableConstant.ORDER_HISTORY_ROUTE);
+                },
+              )
+          ),
           Consumer<ProductBloc>(
             builder: (context, bloc, child){
               return StreamBuilder<Cart>(

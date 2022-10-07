@@ -23,7 +23,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return PageContainer(
       appBar: AppBar(
-        title: const Text("Sign Up"),
+        title: const Text("Đăng Ký"),
       ),
       providers: [
         Provider(create: (context) => ApiRequest()),
@@ -309,10 +309,10 @@ class _SignUpContainerState extends State<SignUpContainer> {
                   }),
                   elevation: MaterialStateProperty.all(5),
                   padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 5, horizontal: 100)),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 100)),
                 )),
             child: ElevatedButton(
-              child: Text("Register",
+              child: Text("Đăng Ký",
                   style: TextStyle(fontSize: 18, color: Colors.white)),
               onPressed: function,
             )));
