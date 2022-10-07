@@ -95,7 +95,17 @@ class _CartPageState extends State<CartPage> {
                      stream: _cartBloc.cartController.stream,
                      builder: (context, snapshot) {
                        if (snapshot.hasError) {
-                         return const Center(child: Text("Data error"));
+                         return Column(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           children: [
+                             Image.asset("assets/images/cart_empty.png"),
+                             Text(
+                               'Dữ liệu lỗi !!!',
+                               style: TextStyle(
+                                   fontWeight: FontWeight.bold, fontSize: 20, color: Colors.red),
+                             ),
+                           ],
+                         );
                        }
                        if (snapshot.hasData) {
                          _cartModel = snapshot.data;
