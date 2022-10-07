@@ -145,13 +145,14 @@ class _SignInContainerState extends State<SignInContainer> {
             InkWell(
               onTap: () async{
                 try {
+
                   var data = await Navigator.pushNamed(context, VariableConstant.SIGN_UP_ROUTE) as Map;
                   setState(() {
                     emailController.text = data["email"];
                     passwordController.text = data["password"];
                   });
                 } catch (e) {
-                  showMessage(context, "Thông báo", e.toString());
+                  //showMessage(context, "Thông báo", e.toString());
                   return;
                 }
               },

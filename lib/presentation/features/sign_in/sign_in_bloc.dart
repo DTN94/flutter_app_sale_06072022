@@ -29,6 +29,7 @@ class SignInBloc extends BaseBloc {
   }
 
   void _handleSignIn(SignInEvent event) async {
+
     loadingSink.add(true);
     try {
       Response response =

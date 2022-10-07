@@ -1,5 +1,4 @@
 import 'package:badges/badges.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_widget.dart';
 import 'package:flutter_app_sale_06072022/data/datasources/local/cache/app_cache.dart';
@@ -29,7 +28,7 @@ class _ProductPageState extends State<ProductPage> {
         title: const Text("Chi tiết sản phẩm"),
         actions: [
           Container(
-              margin: EdgeInsets.only(right: 10, top: 10),
+              margin: EdgeInsets.only(top: 10),
               child: IconButton(
                 icon: Icon(Icons.history_edu),
                 onPressed: () {
@@ -68,6 +67,10 @@ class _ProductPageState extends State<ProductPage> {
             },
           )
         ],
+        leading: new IconButton(
+            icon: new Icon(Icons.arrow_back),
+            onPressed: (){Navigator.pop(context, true);}
+        )
       ),
       providers: [
         Provider(create: (context) => ApiRequest()),
@@ -121,110 +124,119 @@ class _ProductContainerState extends State<ProductContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        Column(
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Stack(
           children: [
-            SizedBox(
-              width: getProportionateScreenWidth(260,context),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Hero(
-                  tag: product!.id,
-                  child: Image.network(selectedImage),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            ListView(
               children: [
-                buildSmallProductPreview(image),
-                ...List.generate(product!.gallery.length,
-                        (index) => buildSmallProductPreview(ApiConstant.BASE_URL + product!.gallery[index])),
+                Column(
+                  children: [
+                    SizedBox(
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Hero(
+                          tag: product!.id,
+                          child: Image.network(selectedImage,fit: BoxFit.contain),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        buildSmallProductPreview(image),
+                        ...List.generate(product!.gallery.length,
+                                (index) => buildSmallProductPreview(ApiConstant.BASE_URL + product!.gallery[index])),
+                      ],
+                    ),
+                  ],
+                ),
+                TopRoundedContainer(
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding:
+                            EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                                product!.name,
+                                style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold
+                                )
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                    "Giá : ",
+                                    style: TextStyle(fontSize: 18)),
+                                Text(NumberFormat("#,###", "en_US")
+                                    .format(product!.price) +
+                                    " đ",
+                                    style: TextStyle(fontSize: 20,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            child: Text(
+                              product!.address,
+                              maxLines: 4,
+                              style: TextStyle(fontSize: 16,
+                                  fontStyle: FontStyle.italic),
+                            ),
+                          )
+                        ],
+                      ),
+                      TopRoundedContainer(
+                        color: Color(0xFFF6F7F9),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                            top: 10,
+                          ),
+                          child: DefaultButton(
+                            text: "Thêm Vào Giỏ",
+                            press: () {
+                              String token = AppCache.getString(VariableConstant.TOKEN);
+                              if(token.isNotEmpty){
+                                _productBloc.eventSink.add(AddToCartEvent(id: product!.id));
+                              }else{
+                                Navigator.pushNamedAndRemoveUntil(context, "/sign_in" , (Route<dynamic> route) => false);
+                              }
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
+            ),
+            LoadingWidget(
+              bloc: _productBloc,
+              child: Container(),
             )
           ],
         ),
-        TopRoundedContainer(
-          color: Colors.white,
-          child: Column(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                    EdgeInsets.symmetric(horizontal: getProportionateScreenWidth(20, context)),
-                    child: Text(
-                        product!.name,
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold
-                        )
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: getProportionateScreenWidth(20, context),
-                      vertical: 5,
-                    ),
-                    child: Row(
-                      children: [
-                        Text(
-                            "Giá : ",
-                            style: TextStyle(fontSize: 18)),
-                        Text(NumberFormat("#,###", "en_US")
-                            .format(product!.price) +
-                            " đ",
-                            style: TextStyle(fontSize: 20,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: getProportionateScreenWidth(20, context),
-                      vertical: 5,
-                    ),
-                    child: Text(
-                      product!.address,
-                      maxLines: 4,
-                        style: TextStyle(fontSize: 16,
-                            fontStyle: FontStyle.italic),
-                    ),
-                  )
-                ],
-              ),
-              TopRoundedContainer(
-                color: Color(0xFFF6F7F9),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 30,
-                    right: 30,
-                    top: getProportionateScreenWidth(15, context),
-                  ),
-                  child: DefaultButton(
-                    text: "Thêm vào giỏ",
-                    press: () {
-                      String token = AppCache.getString(VariableConstant.TOKEN);
-                      if(token.isNotEmpty){
-                        _productBloc.eventSink.add(AddToCartEvent(id: product!.id));
-                      }else{
-                        Navigator.pushNamedAndRemoveUntil(context, "/sign_in" , (Route<dynamic> route) => false);
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        LoadingWidget(
-          bloc: _productBloc,
-          child: Container(),
-        )
-      ],
+      ),
     );
   }
 
@@ -239,11 +251,11 @@ class _ProductContainerState extends State<ProductContainer> {
         duration: Duration(milliseconds: 250),
         margin: EdgeInsets.only(right: 15),
         padding: EdgeInsets.all(5),
-        height: getProportionateScreenHeight(48, context),
-        width: getProportionateScreenWidth(48, context),
+        height: 50,
+        width: 50,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           border: Border.all(
               color: Color(0xFFFF7643).withOpacity(selectedImage == url ? 1 : 0)),
         ),
@@ -267,8 +279,8 @@ class TopRoundedContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: getProportionateScreenWidth(20, context)),
-      padding: EdgeInsets.only(top: getProportionateScreenWidth(20, context)),
+      margin: EdgeInsets.only(top: 5),
+      padding: EdgeInsets.only(top: 5),
       width: double.infinity,
       decoration: BoxDecoration(
         color: color,
@@ -295,7 +307,7 @@ class DefaultButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: getProportionateScreenHeight(56, context),
+      height: 50,
       child: TextButton(
         style: TextButton.styleFrom(
           shape:
@@ -307,25 +319,12 @@ class DefaultButton extends StatelessWidget {
         child: Text(
           text!,
           style: TextStyle(
-            fontSize: getProportionateScreenWidth(18, context),
+            fontSize: 18,
             color: Colors.white,
+              fontWeight: FontWeight.bold
           ),
         ),
       ),
     );
   }
 }
-
-double getProportionateScreenHeight(double inputHeight, BuildContext context) {
-  double screenHeight = MediaQuery.of(context).size.height;
-  // 812 is the layout height that designer use
-  return (inputHeight / 812.0) * screenHeight;
-}
-
-// Get the proportionate height as per screen size
-double getProportionateScreenWidth(double inputWidth, BuildContext context) {
-  double screenWidth = MediaQuery.of(context).size.width;
-  // 375 is the layout width that designer use
-  return (inputWidth / 375.0) * screenWidth;
-}
-

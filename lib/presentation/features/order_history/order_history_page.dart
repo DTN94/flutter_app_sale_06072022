@@ -82,7 +82,7 @@ class _OrderContainerState extends State<OrderContainer> {
                         child: Center(child: Text("Data error")),
                       );
                     }
-                    if (snapshot.data == null || snapshot.data!.isEmpty) {
+                    if (snapshot.data?.length == 0) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

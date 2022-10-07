@@ -229,8 +229,12 @@ class _HomeContainerState extends State<HomeContainer> {
                             Padding(
                               padding: const EdgeInsets.only(left: 5),
                               child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, VariableConstant.PRODUCT_DETAIL_ROUTE, arguments: product);
+                                onPressed: () async{
+                                  await Navigator.pushNamed(context, VariableConstant.PRODUCT_DETAIL_ROUTE, arguments: product).then((value){
+                                    if(value!=null && value==true){
+                                      _homeBloc.eventSink.add(GetCartEvent());
+                                    }
+                                  });
                                 },
                                 style: ButtonStyle(
                                     backgroundColor:

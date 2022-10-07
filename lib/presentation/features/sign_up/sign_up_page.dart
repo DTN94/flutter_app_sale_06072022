@@ -129,6 +129,7 @@ class _SignUpContainerState extends State<SignUpContainer> {
                             ),
                             ProgressListenerWidget<SignUpBloc>(
                               callback: (event) {
+
                                 if (event is SignUpSuccessEvent) {
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(event.message)));
                                   Navigator.pop(context, {"email": event.email, "password": event.password});
